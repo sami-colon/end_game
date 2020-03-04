@@ -3,13 +3,13 @@
 using namespace std;
 int main() {
 	int t;
-	cin >> t;
+	scanf("%d ", &t);
 	while(t--){
 		int n;
-		cin >> n;
+		scanf("%d ", &n);
 		int arr[n];
 		for(int i=0; i<n; i++){
-			cin >> arr[i];
+			scanf("%d ", &arr[i]);
 		}
 		int increasing[n], decreasing[n];
 		increasing[0] = 1; decreasing[n-1] = 1;
@@ -29,9 +29,10 @@ int main() {
 		}
 		int ans = 1;
 		for(int i=0; i<n; i++){
-			ans = max(ans, increasing[i] + decreasing[i] - 1);
+			if(increasing[i] + decreasing[i] - 1 > ans)
+				ans = increasing[i] + decreasing[i] - 1;
 		}
-		cout << ans<< endl;
+		printf("%d\n", ans);
 	}
 	return 0;
 }
