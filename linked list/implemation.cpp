@@ -123,6 +123,36 @@ public:
 			}
 		}
 	}
+	void deleteATPosition(int pos){
+		if(this->head == NULL) return;
+		else{
+			int len = 1;
+			node* temp = head;
+			while(temp != NULL){
+				len++;
+				temp = temp->next;
+			}
+			if(pos > len){
+				return;
+			}
+			else{
+				len = 1;
+				temp = head;
+				node* prev = NULL;
+				while(len != pos){
+					len++;
+					prev = temp;
+					temp = temp->next;
+				}
+				if(prev != NULL)
+					prev->next = temp->next;
+				else
+					head = NULL;
+				delete temp;
+				return;
+			}
+		}
+	}
 	void deleteATMid(){
 		if(this->head == NULL){
 			return;
@@ -131,9 +161,40 @@ public:
 			// calculate length.
 			// even => length/2 position delete. odd => length+1/2	positon delete.
 			// iterate through positons then delete it.
+			int pos = 1;
+			node* temp = this->head;
+			while(temp!=NULL){
+				temp = temp->next;
+			}
+			pos = pos%2==0?pos/2:(pos+1)/2;
+			deleteATPosition(pos);
 		}
 	}
-	void deleteATPosition(int pos);
+	bool searchUsingRecursion(int x, node* curr){
+		if(curr == NULL){
+			return false;
+		}
+		if(curr->x == x){
+			return true;
+		}
+		else{
+			return searchUsingRecursion(x, curr->next);
+		}
+	}
+	void getInput(){
+		int data;
+		cin >> data;
+		while(data != -1){
+			if(this->head == NULL){
+				node* temp = new node(data);
+				this->setHead(temp);
+			}
+			else
+				this->insertAtLast(data);
+			cin >> data;
+		}
+		return;
+	}
 	void print(){
 		node* n = head;
 		while(n!=NULL){
@@ -142,23 +203,65 @@ public:
 		}
 		cout << "X" << endl;
 	}
-	
+	friend istream& operator>>(istream &is, linkedList ll);
+	friend ostream& operator<<(ostream &os, linkedList ll);	
+	void reverse(){
+		node* prev = NULL;
+		node* curr = this->head;
+		while(curr != NULL){
+			node* next = curr->next;
+			curr->next = prev;
+			prev = curr;
+			curr = next;
+		}
+		this->head = prev;
+	}
+	void reverseUsingRecusrion(node* curr, node* prev=NULL){
+		if(curr == NULL){
+			this->head = prev;
+			return;
+		}
+		else{
+			node* next = curr->next;
+			curr->next = prev;
+			reverseUsingRecusrion(next, curr);
+			return;
+		}
+	}
+	int getMiddleElement(){
+		if(this->head == NULL) return -1;
+		if(this->head->next == NULL) return head->x;
+
+		// using runner approach.
+		node* slow = this->head;
+		/* for 1st mid element. */
+		//node* fast = this->head->next;
+		/* for 2nd mid element. */
+		node* fast = this->head;
+		while(fast!=NULL && fast->next!=NULL){
+			slow = slow->next;
+			fast = fast->next->next;
+		}
+		return slow->x;
+	}
 };
+
+istream& operator>>(istream &is, linkedList *ll){
+	ll->getInput();
+	return is;
+}
+
+ostream& operator<<(ostream &os, linkedList ll){
+	ll.print();
+	return os;
+} 
 
 int main(){
 	linkedList ll;
-	node* head = new node(1);
-	ll.setHead(head);
-	ll.insertAtHead(2);
-	ll.insertAtHead(5);
-	ll.insertAtLast(3);
-	ll.insertAtLast(4);
-	ll.print();
-	ll.insertAtMiddle(45);
-	ll.print();
-	ll.insertAtMiddle(46);
-	ll.print();
-	ll.insertAtPositionAfter(47, 4);
-	ll.print();
+	cin >> &ll;
+	cout << endl << ll;
+	ll.reverseUsingRecusrion(ll.getHead());
+	cout << endl << ll;
 	return 0;
 }
+
