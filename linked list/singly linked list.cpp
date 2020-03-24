@@ -11,6 +11,8 @@ public:
 	}
 };
 
+node* merge(node* a, node* b);
+
 class linkedList
 {
 private:
@@ -244,6 +246,46 @@ public:
 		}
 		return slow->x;
 	}
+	int getKthElementFromEnd(int k){
+		int c=1;
+		node*fast = this->head, *slow = this->head;
+		while(c!=k && fast!=NULL){
+			c++;
+			fast=fast->next;
+		}
+		if(fast==NULL){
+			return -1;
+		}
+		while(fast->next!=NULL){
+			fast=fast->next;
+			slow=slow->next;
+		}
+		return slow->x;
+	}
+	node* mergeSort(node* head){
+		if(head==NULL || head->next==NULL)
+			return head;
+		else{
+			// get middle element.
+			node* mid;
+			if(head->next == NULL)
+				mid = head;
+			else{
+				node* slow = head;
+				node* fast = head->next;
+				while(fast!=NULL && fast->next!=NULL){
+					slow = slow->next;
+					fast = fast->next->next;
+				}
+				mid = slow;
+			}
+			node* a = head, *b = mid->next;
+			mid->next = NULL;
+			a = mergeSort(a);
+			b = mergeSort(b);
+			return merge(a, b);
+		}
+	}
 };
 
 istream& operator>>(istream &is, linkedList *ll){
@@ -256,12 +298,27 @@ ostream& operator<<(ostream &os, linkedList ll){
 	return os;
 } 
 
+node* merge(node* a, node* b){
+	if(a == NULL) return b;
+	if(b == NULL) return a;
+	if(a->x <= b->x){
+		node* next = merge(a->next, b);
+		a->next = next;
+		return a;
+	}
+	else{
+		node* next = merge(a, b->next);
+		b->next = next;
+		return b;
+	}
+}
+
 int main(){
 	linkedList ll;
 	cin >> &ll;
-	cout << endl << ll;
-	ll.reverseUsingRecusrion(ll.getHead());
-	cout << endl << ll;
+	cout << endl << ll << endl;
+	ll.setHead(	ll.mergeSort(ll.getHead()));
+	cout << endl << ll << endl;
 	return 0;
 }
 
