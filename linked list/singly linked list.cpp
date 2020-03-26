@@ -288,6 +288,43 @@ public:
 	}
 };
 
+bool cycleDetection(node* head){
+	// floydd cycle detection.
+	if(head == NULL){
+		return false;
+	}
+	node* curr=head, *next = head->next;
+	while(next != NULL && next->next != NULL){
+		if(curr == next) return true;
+		curr = curr->next; // speed 1
+		next = next->next->next; // speed 2
+	}
+	return false;
+}
+
+void removeCycle(node* head){
+	bool hascycle = cycleDetection(head);
+	if(hascycle){
+		node* curr=head, *next = head->next;
+		while(next != NULL && next->next != NULL){
+			if(curr == next) break;
+			curr = curr->next; // speed 1
+			next = next->next->next; // speed 2
+		}
+		// move slow and fast at same speed after making slow at head;
+		slow = head;
+		prev = NULL;
+		while(slow != fast){
+			slow = slow->next;
+			prev = fast;
+			fast = fast->next;
+		}
+		if(prev){
+			prev->next = NULL;
+		}
+	}
+}
+
 istream& operator>>(istream &is, linkedList *ll){
 	ll->getInput();
 	return is;
@@ -316,8 +353,6 @@ node* merge(node* a, node* b){
 int main(){
 	linkedList ll;
 	cin >> &ll;
-	cout << endl << ll << endl;
-	ll.setHead(	ll.mergeSort(ll.getHead()));
 	cout << endl << ll << endl;
 	return 0;
 }
