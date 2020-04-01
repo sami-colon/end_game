@@ -1,0 +1,33 @@
+node* insertionSort(node* head){
+	if(head==NULL || head->next == NULL)
+	return head;
+	node* prev = head;
+	node* sorted = head;
+	node* ptr = head->next;
+	while(ptr!=NULL){
+		node* key = ptr;
+		if(key->data < prev->data){
+			node* loc = getPosition(head, sorted, key->data){
+				if(loc == NULL){
+					// insert at head.
+					prev->next = key->next;
+					key->next = head;
+					head = key;
+				}
+				else{
+				// insert at mid
+					prev->next = key->next;
+					key->next = loc->next;
+					loc->next = key;
+				}
+			}
+		}
+		else{
+			// alreday sorted.
+			sorted = sorted->next;
+		}
+		prev = sorted;
+		ptr = sorted->next;
+	}
+	return head;
+}
